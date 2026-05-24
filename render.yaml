@@ -3,7 +3,7 @@ services:
     name: media-downloader
     env: node
     plan: free
-    buildCommand: "npm install && apt-get update && apt-get install -y yt-dlp ffmpeg"
+    buildCommand: "bash build.sh"
     startCommand: "node server.js"
     envVars:
       - key: NODE_ENV

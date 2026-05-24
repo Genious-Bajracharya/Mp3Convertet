@@ -63,6 +63,11 @@ app.post('/api/download', express.json(), async (req, res) => {
       '--no-warnings'
     ];
 
+    const cookiesPath = process.env.COOKIES_FILE || '/etc/secrets/cookies.txt';
+    if (fs.existsSync(cookiesPath)) {
+      args.push('--cookies', cookiesPath);
+    }
+
     if (isMP3) {
       args.push('-x', '--audio-format', 'mp3');
     }

@@ -3,7 +3,7 @@ services:
     name: media-downloader
     env: node
     plan: free
-    buildCommand: "bash build.sh"
+    buildCommand: "npm install && npm run build"
     startCommand: "node server.js"
     envVars:
       - key: NODE_ENV

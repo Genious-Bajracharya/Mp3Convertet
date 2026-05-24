@@ -2,10 +2,11 @@
   "name": "youtubedownloader",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build": "node install-binaries.js"
   },
   "keywords": [],
   "author": "",

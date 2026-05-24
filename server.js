@@ -22,10 +22,9 @@ if (!fs.existsSync(TEMP_DIR)) {
 // Check if yt-dlp is installed
 const checkYtDlp = () => {
   return new Promise((resolve) => {
-    const proc = spawn('which', ['yt-dlp']);
-    let output = '';
-    proc.stdout.on('data', (data) => { output += data; });
+    const proc = spawn('yt-dlp', ['--version']);
     proc.on('close', (code) => resolve(code === 0));
+    proc.on('error', () => resolve(false));
   });
 };
 

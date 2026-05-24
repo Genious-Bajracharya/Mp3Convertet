@@ -4,16 +4,22 @@ set -e
 echo "Installing Node dependencies..."
 npm install
 
-echo "Installing ffmpeg..."
-apt-get update -qq
-apt-get install -y ffmpeg
+echo "Creating local bin directory..."
+mkdir -p ./bin
 
-echo "Downloading yt-dlp binary..."
-curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
-chmod a+rx /usr/local/bin/yt-dlp
+echo "Downloading yt-dlp..."
+curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o ./bin/yt-dlp
+chmod +x ./bin/yt-dlp
+
+echo "Downloading ffmpeg static binary..."
+curl -L https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz -o /tmp/ffmpeg.tar.xz
+tar -xf /tmp/ffmpeg.tar.xz -C /tmp
+find /tmp -name "ffmpeg" -type f | head -1 | xargs -I{} cp {} ./bin/ffmpeg
+chmod +x ./bin/ffmpeg
+rm -f /tmp/ffmpeg.tar.xz
 
 echo "Verifying..."
-yt-dlp --version
-ffmpeg -version | head -1
+./bin/yt-dlp --version
+./bin/ffmpeg -version | head -1
 
 echo "Build complete!"

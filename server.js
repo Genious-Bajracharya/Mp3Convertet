@@ -9,6 +9,12 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Use local bin/ for yt-dlp and ffmpeg on Render, fall back to system PATH
+const LOCAL_BIN = path.join(__dirname, 'bin');
+const YT_DLP = fs.existsSync(path.join(LOCAL_BIN, 'yt-dlp')) ? path.join(LOCAL_BIN, 'yt-dlp') : 'yt-dlp';
+const FFMPEG = fs.existsSync(path.join(LOCAL_BIN, 'ffmpeg')) ? path.join(LOCAL_BIN, 'ffmpeg') : 'ffmpeg';
+const SPAWN_ENV = { ...process.env, PATH: `${LOCAL_BIN}:${process.env.PATH}` };
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
@@ -22,7 +28,7 @@ if (!fs.existsSync(TEMP_DIR)) {
 // Check if yt-dlp is installed
 const checkYtDlp = () => {
   return new Promise((resolve) => {
-    const proc = spawn('yt-dlp', ['--version']);
+    const proc = spawn(YT_DLP, ['--version'], { env: SPAWN_ENV });
     proc.on('close', (code) => resolve(code === 0));
     proc.on('error', () => resolve(false));
   });
@@ -52,6 +58,7 @@ app.post('/api/download', express.json(), async (req, res) => {
     const args = [
       url,
       '-o', `${outputPath}.%(ext)s`,
+      '--ffmpeg-location', FFMPEG,
       '--quiet',
       '--no-warnings'
     ];
@@ -62,7 +69,7 @@ app.post('/api/download', express.json(), async (req, res) => {
 
     console.log(`Starting download: ${url}`);
 
-    const proc = spawn('yt-dlp', args);
+    const proc = spawn(YT_DLP, args, { env: SPAWN_ENV });
     let errorOutput = '';
 
     proc.stderr.on('data', (data) => {

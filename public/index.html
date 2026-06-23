@@ -256,6 +256,9 @@
       <button type="button" class="tab-btn" data-tab="instagram">
         📸 Instagram
       </button>
+      <button type="button" class="tab-btn" data-tab="twitter">
+        𝕏 Twitter
+      </button>
     </div>
 
     <!-- YouTube Tab -->
@@ -351,6 +354,33 @@
       </form>
     </div>
 
+    <!-- Twitter Tab -->
+    <div id="twitter" class="tab-content">
+      <form id="twitterForm">
+        <div class="input-group">
+          <label for="twitterUrl">Twitter/X URL</label>
+          <input
+            type="text"
+            id="twitterUrl"
+            placeholder="https://twitter.com/username/status/... or https://x.com/..."
+            required
+          >
+        </div>
+
+        <div class="input-group">
+          <label>Format</label>
+          <div class="format-options">
+            <div class="radio-option">
+              <input type="radio" id="twMp4" name="twFormat" value="mp4" checked>
+              <label for="twMp4">🎬 MP4</label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="twDownloadBtn">Download</button>
+      </form>
+    </div>
+
     <div class="status" id="status"></div>
 
     <div class="info">
@@ -410,6 +440,18 @@
       const url = instagramUrlInput.value.trim();
       const igType = document.querySelector('input[name="igType"]:checked').value;
       await handleDownload(url, 'mp4', 'Instagram', instagramUrlInput, igDownloadBtn);
+    });
+
+    // Twitter form handler
+    const twitterForm = document.getElementById('twitterForm');
+    const twitterUrlInput = document.getElementById('twitterUrl');
+    const twDownloadBtn = document.getElementById('twDownloadBtn');
+
+    twitterForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = twitterUrlInput.value.trim();
+      const format = document.querySelector('input[name="twFormat"]:checked').value;
+      await handleDownload(url, format, 'Twitter', twitterUrlInput, twDownloadBtn);
     });
 
     async function handleDownload(url, format, platform, urlInput, btn) {
